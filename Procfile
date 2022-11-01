@@ -1,1 +1,1 @@
-worker: python first_run.py
+web: gunicorn first_run:app
