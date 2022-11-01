@@ -1,1 +1,1 @@
-worker: python Naver_crawl.py
+worker: python first_run.py
