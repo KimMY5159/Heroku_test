@@ -12,6 +12,7 @@ et-xmlfile==1.1.0
 Flask==2.2.2
 Flask-Cors==3.0.10
 Flask-MySQLdb==1.0.1
+gunicorn==20.1.0
 h11==0.14.0
 idna==3.3
 image==1.5.33
