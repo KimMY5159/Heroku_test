@@ -11,7 +11,7 @@ conn = pymysql.connect(host='h1use0ulyws4lqr1.cbetxkdyhwsb.us-east-1.rds.amazona
 def hello():
     # MySQL 서버에 접속하기
     cur = conn.cursor()
-    sql = "SELECT * FROM movies_221103"
+    sql = "SELECT * FROM movies_221102"
     # MySQL 명령어 실행하기
     cur.execute(sql)
     # 전체 row 가져오기
@@ -21,7 +21,7 @@ def hello():
 
 @app.route('/search?keywords=<key>')
 def search(key):
-    sql = "SELECT * FROM movies_221103 where title or genre like '%"+key+"'%'"
+    sql = "SELECT * FROM movies_221102 where title or genre like '%"+key+"'%'"
     cur.execute(sql)
     res = cur.fetchall()
     return jsonify(res)
