@@ -19,9 +19,11 @@ def hello():
     # Flask에서 제공하는 json변환 함수
     return jsonify(res)
 
-@app.route('/search?keywords=<key>')
+@app.route('/search=<key>')
 def search(key):
-    sql = "SELECT * FROM movies_221102 where title or genre like '%"+key+"'%'"
+    cur = conn.cursor()
+    key = key.strip()
+    sql = "SELECT * FROM disney where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + "%')"
     cur.execute(sql)
     res = cur.fetchall()
     return jsonify(res)
