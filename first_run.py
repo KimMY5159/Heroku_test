@@ -3,7 +3,8 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-conn = pymysql.connect(host='us-cdbr-east-06.cleardb.net', user = 'bb0a771f38c75f', password='9921acd2', db = 'heroku_ca',charset = 'utf8')
+conn = pymysql.connect(host='h1use0ulyws4lqr1.cbetxkdyhwsb.us-east-1.rds.amazonaws.com', user='s9cnfaowbp539mgs',
+                       password='my3y3g6e934oqu2b', db='nyazi8y7vo8m9njq', charset='utf8')
 # curs = conn.cursor(pymysql.cursors.DictCursor)
 
 @app.route('/')
