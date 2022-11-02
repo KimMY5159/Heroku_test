@@ -23,7 +23,7 @@ def hello():
 def search(key):
     cur = conn.cursor()
     key = key.strip()
-    sql = "SELECT * FROM disney where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + "%')"
+    sql = "SELECT * FROM movies_221102 where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + "%')"
     cur.execute(sql)
     res = cur.fetchall()
     return jsonify(res)
