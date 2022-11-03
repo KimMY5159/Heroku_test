@@ -9,11 +9,12 @@ cur = conn.cursor(pymysql.cursors.DictCursor)
 
 @app.route('/page=<page_num>')
 def hello(page_num):
+    curs = conn.cursor()
     page_num = int(page_num.strip())
     res = []
-    sql = "SELECT COUNT(*) FROM movies_221102"
-    cur.execute(sql)
-    total_results = int(cur.fetchone())
+    sql = "SELECT COUNT(content_id) FROM movies_221102"
+    curs.execute(sql)
+    total_results = int(curs.fetchone())
     if total_results%30 == 0:
       total_pages = total_results/30
     else:
