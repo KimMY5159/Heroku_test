@@ -7,7 +7,7 @@ conn = pymysql.connect(host='h1use0ulyws4lqr1.cbetxkdyhwsb.us-east-1.rds.amazona
                        password='my3y3g6e934oqu2b', db='nyazi8y7vo8m9njq', charset='utf8')
 cur = conn.cursor(pymysql.cursors.DictCursor)
 
-@app.route('/')
+@app.route('/Movies')
 def hello():
     # MySQL 서버에 접속하기
     # cur = conn.cursor(dictionary=True)
