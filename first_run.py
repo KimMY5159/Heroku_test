@@ -5,12 +5,12 @@ app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 conn = pymysql.connect(host='h1use0ulyws4lqr1.cbetxkdyhwsb.us-east-1.rds.amazonaws.com', user='s9cnfaowbp539mgs',
                        password='my3y3g6e934oqu2b', db='nyazi8y7vo8m9njq', charset='utf8')
-# curs = conn.cursor(pymysql.cursors.DictCursor)
+cur = conn.cursor(pymysql.cursors.DictCursor)
 
 @app.route('/')
 def hello():
     # MySQL 서버에 접속하기
-    cur = conn.cursor(dictionary=True)
+    # cur = conn.cursor(dictionary=True)
     sql = "SELECT * FROM movies_221102"
     # MySQL 명령어 실행하기
     cur.execute(sql)
@@ -21,7 +21,7 @@ def hello():
 
 @app.route('/search=<key>')
 def search(key):
-    cur = conn.cursor(dictionary=True)
+    # cur = conn.cursor(dictionary=True)
     key = key.strip()
     sql = "SELECT * FROM movies_221102 where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + "%')"
     cur.execute(sql)
