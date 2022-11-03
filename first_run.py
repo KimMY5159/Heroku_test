@@ -32,7 +32,7 @@ def hello(page_num):
        total_pages=total_pages,
        total_results=total_results)
     # Flask에서 제공하는 json변환 함수
-    return jsonify(res)
+    return res
 
 @app.route('/search=<key>')
 def search(key):
