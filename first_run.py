@@ -9,7 +9,7 @@ cur = conn.cursor(pymysql.cursors.DictCursor)
 
 @app.route('/page=<page_num>')
 def hello(page_num):
-    page_num = page_num.strip()
+    page_num = int(page_num.strip())
     # MySQL 서버에 접속하기
     sql = f"SELECT * FROM movies_221102 ORDER BY popularity DESC ORDERS LIMIT 30 OFFSET {30*page_num-30}"
     # MySQL 명령어 실행하기
