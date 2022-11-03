@@ -7,11 +7,11 @@ conn = pymysql.connect(host='h1use0ulyws4lqr1.cbetxkdyhwsb.us-east-1.rds.amazona
                        password='my3y3g6e934oqu2b', db='nyazi8y7vo8m9njq', charset='utf8')
 cur = conn.cursor(pymysql.cursors.DictCursor)
 
-@app.route('/Movies')
-def hello():
+@app.route('/page=<page_num>')
+def hello(page_num):
+    page_num = page_num.strip()
     # MySQL 서버에 접속하기
-    # cur = conn.cursor(dictionary=True)
-    sql = "SELECT * FROM movies_221102"
+    sql = f"SELECT * FROM movies_221102 ORDER BY popularity DESC ORDERS LIMIT 30 OFFSET {30*page_num-30}"
     # MySQL 명령어 실행하기
     cur.execute(sql)
     # 전체 row 가져오기
@@ -21,7 +21,6 @@ def hello():
 
 @app.route('/search=<key>')
 def search(key):
-    # cur = conn.cursor(dictionary=True)
     key = key.strip()
     sql = "SELECT * FROM movies_221102 where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + "%')"
     cur.execute(sql)
