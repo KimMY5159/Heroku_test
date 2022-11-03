@@ -14,7 +14,7 @@ def hello(page_num):
     res = []
     sql = "SELECT COUNT(content_id) FROM movies_221102"
     curs.execute(sql)
-    total_results = int(curs.fetchone())
+    total_results = int(curs.fetchone()[0])
     if total_results%30 == 0:
       total_pages = total_results/30
     else:
