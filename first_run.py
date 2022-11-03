@@ -11,7 +11,7 @@ cur = conn.cursor(pymysql.cursors.DictCursor)
 def hello(page_num):
     page_num = int(page_num.strip())
     # MySQL 서버에 접속하기
-    sql = f"SELECT * FROM movies_221102 ORDER BY popularity DESC ORDERS LIMIT 30 OFFSET {30*page_num-29}"
+    sql = f"SELECT * FROM movies_221102 ORDER BY popularity DESC LIMIT 30 OFFSET {30*page_num-30}"
     # MySQL 명령어 실행하기
     cur.execute(sql)
     # 전체 row 가져오기
