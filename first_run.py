@@ -38,7 +38,7 @@ def hello(page_num):
 @app.route('/search=<key>/page=<page_num>')
 def search(key, page_num):
     curs = conn.cursor()
-    # page_num = int(page_num.strip())
+    page_num = int(page_num.strip())
     res = []
     sql = "SELECT COUNT(content_id) FROM movies where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + "%')"
     curs.execute(sql)
