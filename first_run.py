@@ -7,40 +7,61 @@ conn = pymysql.connect(host='h1use0ulyws4lqr1.cbetxkdyhwsb.us-east-1.rds.amazona
                        password='my3y3g6e934oqu2b', db='nyazi8y7vo8m9njq', charset='utf8')
 cur = conn.cursor(pymysql.cursors.DictCursor)
 
+
 @app.route('/page=<page_num>')
 def hello(page_num):
     curs = conn.cursor()
     page_num = int(page_num.strip())
     res = []
-    sql = "SELECT COUNT(content_id) FROM movies_221102"
+    sql = "SELECT COUNT(content_id) FROM movies"
     curs.execute(sql)
     total_results = int(curs.fetchone()[0])
-    if total_results%30 == 0:
-      total_pages = total_results/30
+    if total_results % 30 == 0:
+        total_pages = total_results / 30
     else:
-      total_pages = int(total_results/30)+1
-    
-    
-    sql = f"SELECT * FROM movies_221102 ORDER BY popularity DESC LIMIT 30 OFFSET {30*page_num-30}"
+        total_pages = int(total_results / 30) + 1
+
+    sql = f"SELECT * FROM movies ORDER BY popularity DESC LIMIT 30 OFFSET {30 * page_num - 30}"
     cur.execute(sql)
     # 전체 row 가져오기
     data = cur.fetchall()
     jsonify(data)
     res = jsonify(
-       page=page_num,
-       results=data,
-       total_pages=total_pages,
-       total_results=total_results)
+        page=page_num,
+        results=data,
+        total_pages=total_pages,
+        total_results=total_results)
     # Flask에서 제공하는 json변환 함수
     return res
 
-@app.route('/search=<key>')
-def search(key):
+
+@app.route('/search=<key>/page=<page_num>')
+def search(key, page_num):
+    if page_num not in locals():
+        page_num = 1
+    curs = conn.cursor()
+    page_num = int(page_num.strip())
+    res = []
+    sql = "SELECT COUNT(content_id) FROM movies where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + "%')"
+    curs.execute(sql)
+    total_results = int(curs.fetchone()[0])
+    if total_results % 30 == 0:
+        total_pages = total_results / 30
+    else:
+        total_pages = int(total_results / 30) + 1
+
     key = key.strip()
-    sql = "SELECT * FROM movies_221102 where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + "%')"
+    sql = "SELECT * FROM movies where (title like '%" + key + "%' or genre like '%" + key + "%' or original_title like '%" + key + f"%') ORDER BY popularity DESC LIMIT 30 OFFSET {30 * page_num - 30}"
     cur.execute(sql)
-    res = cur.fetchall()
-    return jsonify(res)
+    data = cur.fetchall()
+    jsonify(data)
+    res = jsonify(
+        page=page_num,
+        results=data,
+        total_pages=total_pages,
+        total_results=total_results)
+    return res
+
 
 if __name__ == '__main__':
     app.run()
