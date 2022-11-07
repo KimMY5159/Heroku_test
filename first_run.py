@@ -109,7 +109,7 @@ def search(content, key, page_num):
         sort_by = 'rating'
         ident = 'id_list'
         if '요' in key:
-          where = "day like '%{key[:1]}%'"
+          where = f"day like '%{key[:1]}%'"
         else:
           where = f"(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')"
 
@@ -147,7 +147,7 @@ def search_with_platform(content, platform, key, page_num):
         sort_by = 'rating'
         ident = 'id_list'
         if '요일' in key:
-          where = "day like '%{key[:1]}%'"
+          where = f"day like '%{key[:1]}%'"
         else:
           where = f"(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')"
 
