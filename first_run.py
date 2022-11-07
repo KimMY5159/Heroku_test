@@ -21,11 +21,11 @@ def hello():
         기본 경로(필수) :     kmy-heroku-test.herokuapp.com<br>
         (필수)              /contents={movies, tv, webtoon, webnovel}<br>
         (선택:플랫폼)        /platform={movies&tv=[Netflix,DisneyPlus,wavve,Watcha],webtoon&webnovel=[naver,kakopage]}
-        (선택:검색)          /search={제목 또는 장르 검색어}<br>
+        (선택:검색)          /search={제목 또는 장르 검색어. 웹툰과 소설은 작가도 가능. 요일검색은 'X요웹툰'형식으로 요일만가능}<br>
         (필수)              /page={페이지숫자}
         
         페이지에 최대30개씩 표시됩니다.
-        제목검색은 원제,번역제목 모두 가능합니다.
+        영화와 tv시리즈 제목검색은 원제,번역제목 모두 가능합니다.
         정렬은 기본적으로 영화와 tv시리즈는 컨텐츠의 인기도 내림차순, 웹툰과 웹소설은 작품의 평균평점 내림차순으로 정렬됩니다.
     </pre>
     </body>
@@ -105,14 +105,19 @@ def search(content, key, page_num):
     if content == 'movies' or content == 'tv':
         sort_by = 'popularity'
         ident = 'content_id'
+        where = '(title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')'
     elif content == 'webtoon' or content == 'webnovel':
         sort_by = 'rating'
         ident = 'id_list'
+        if '요웹툰' in key:
+          where = 'day like '%{key[:1]}%'
+        else:
+          where = '(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')'
 
     curs = conn.cursor()
     page_num = int(page_num.strip())
     res = []
-    sql = f"SELECT COUNT({ident}) FROM {content} where (title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')"
+    sql = f"SELECT COUNT({ident}) FROM {content} where {where}"
     curs.execute(sql)
     total_results = int(curs.fetchone()[0])
     if total_results % 30 == 0:
@@ -121,7 +126,7 @@ def search(content, key, page_num):
         total_pages = int(total_results / 30) + 1
 
     key = key.strip()
-    sql = f"SELECT * FROM {content} where (title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%') ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
+    sql = f"SELECT * FROM {content} where {where} ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
     cur.execute(sql)
     data = cur.fetchall()
     jsonify(data)
@@ -138,14 +143,19 @@ def search_with_platform(content, platform, key, page_num):
     if content == 'movies' or content == 'tv':
         sort_by = 'popularity'
         ident = 'content_id'
+        where = '(title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')'
     elif content == 'webtoon' or content == 'webnovel':
         sort_by = 'rating'
         ident = 'id_list'
+        if '요웹툰' in key:
+          where = 'day like '%{key[:1]}%'
+        else:
+          where = '(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')'
 
     curs = conn.cursor()
     page_num = int(page_num.strip())
     res = []
-    sql = f"SELECT COUNT({ident}) FROM {content} where (platform like '%{platform}%' and (title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%'))"
+    sql = f"SELECT COUNT({ident}) FROM {content} where (platform like '%{platform}%' and {where})"
     curs.execute(sql)
     total_results = int(curs.fetchone()[0])
     if total_results % 30 == 0:
@@ -154,7 +164,7 @@ def search_with_platform(content, platform, key, page_num):
         total_pages = int(total_results / 30) + 1
 
     key = key.strip()
-    sql = f"SELECT * FROM {content} where (platform like '%{platform}%' and (title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')) ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
+    sql = f"SELECT * FROM {content} where (platform like '%{platform}%' and {where}) ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
     cur.execute(sql)
     data = cur.fetchall()
     jsonify(data)
