@@ -104,14 +104,14 @@ def search(content, key, page_num):
     if content == 'movies' or content == 'tv':
         sort_by = 'popularity'
         ident = 'content_id'
-        where = "(title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')"
+        where = f"(title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')"
     elif content == 'webtoon' or content == 'webnovel':
         sort_by = 'rating'
         ident = 'id_list'
         if '요' in key:
           where = "day like '%{key[:1]}%'"
         else:
-          where = "(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')"
+          where = f"(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')"
 
     curs = conn.cursor()
     page_num = int(page_num.strip())
