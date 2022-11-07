@@ -21,12 +21,13 @@ def hello():
         기본 경로(필수) :     kmy-heroku-test.herokuapp.com<br>
         (필수)              /contents={movies, tv, webtoon, webnovel}<br>
         (선택:플랫폼)        /platform={movies&tv=[Netflix,DisneyPlus,wavve,Watcha],webtoon&webnovel=[naver,kakopage]}
-        (선택:검색)          /search={제목 또는 장르 검색어. 웹툰과 소설은 작가도 가능. 요일검색은 'X요웹툰'형식으로 요일만가능}<br>
+        (선택:검색)          /search={검색어}<br>
         (필수)              /page={페이지숫자}
         
-        페이지에 최대30개씩 표시됩니다.
-        영화와 tv시리즈 제목검색은 원제,번역제목 모두 가능합니다.
+        컨텐츠는 한 페이지에 최대30개씩 표시됩니다.
+        영화와 tv시리즈 검색은 원제,번역제목,장르 검색 가능합니다.
         정렬은 기본적으로 영화와 tv시리즈는 컨텐츠의 인기도 내림차순, 웹툰과 웹소설은 작품의 평균평점 내림차순으로 정렬됩니다.
+        웹툰과 웹소설 검색은 제목,장르,작가 검색이 가능합니다. 혹은 'X요일'과 같은 식으로 특정요일 연재작품 검색이 가능합니다.
     </pre>
     </body>
     '''
@@ -62,7 +63,6 @@ def all_contents(content, page_num):
         results=data,
         total_pages=total_pages,
         total_results=total_results)
-    # Flask에서 제공하는 json변환 함수
     return res
 
 
@@ -96,7 +96,6 @@ def contents_with_platform(content, platform, page_num):
         results=data,
         total_pages=total_pages,
         total_results=total_results)
-    # Flask에서 제공하는 json변환 함수
     return res
 
 
@@ -105,14 +104,14 @@ def search(content, key, page_num):
     if content == 'movies' or content == 'tv':
         sort_by = 'popularity'
         ident = 'content_id'
-        where = '(title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')'
+        where = "(title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')"
     elif content == 'webtoon' or content == 'webnovel':
         sort_by = 'rating'
         ident = 'id_list'
-        if '요웹툰' in key:
-          where = 'day like '%{key[:1]}%'
+        if '요' in key:
+          where = "day like '%{key[:1]}%'"
         else:
-          where = '(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')'
+          where = "(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')"
 
     curs = conn.cursor()
     page_num = int(page_num.strip())
@@ -143,14 +142,14 @@ def search_with_platform(content, platform, key, page_num):
     if content == 'movies' or content == 'tv':
         sort_by = 'popularity'
         ident = 'content_id'
-        where = '(title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')'
+        where = "(title like '%{key}%' or genre like '%{key}%' or original_title like '%{key}%')"
     elif content == 'webtoon' or content == 'webnovel':
         sort_by = 'rating'
         ident = 'id_list'
-        if '요웹툰' in key:
-          where = 'day like '%{key[:1]}%'
+        if '요일' in key:
+          where = "day like '%{key[:1]}%'"
         else:
-          where = '(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')'
+          where = "(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')"
 
     curs = conn.cursor()
     page_num = int(page_num.strip())
