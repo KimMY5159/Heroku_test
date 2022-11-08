@@ -25,8 +25,9 @@ def hello():
         (필수) 페이지 :      /page={페이지숫자}
         
         컨텐츠는 한 페이지에 최대30개씩 표시됩니다.<br>
-        영화와 tv시리즈 검색은 원제,번역제목,장르 검색 가능합니다.<br>
         정렬은 기본적으로 영화와 tv시리즈는 컨텐츠의 인기도 내림차순, 웹툰과 웹소설은 작품의 평균평점 내림차순으로 정렬됩니다.<br>
+        플랫폼은 {플랫폼1,플랫폼2}와 같이 여러개 선택가능합니다.<br>
+        영화와 tv시리즈 검색은 원제,번역제목,장르 검색 가능합니다.<br>
         웹툰과 웹소설 검색은 제목,장르,작가 검색이 가능합니다. 혹은 'X요일'과 같은 식으로 특정요일 연재작품 검색이 가능합니다.<br>
     </pre>
     </body>
@@ -74,11 +75,18 @@ def contents_with_platform(content, platform, page_num):
     elif content == 'webtoon' or content == 'webnovel':
         sort_by = 'rating'
         ident = 'id_list'
-
+        
+    platform = platform.split(',')
+    plat = ''
+    plat += f"'%{platform[0]}%'"
+    for i in range(1,len(platform)):
+      plat += ' or '
+      plat += f"'%{platform[i]}%'"
+    
     curs = conn.cursor()
     page_num = int(page_num.strip())
     res = []
-    sql = f"SELECT COUNT({ident}) FROM {content} where platform like '%{platform}%'"
+    sql = f"SELECT COUNT({ident}) FROM {content} where platform like '%{plat}%'"
     curs.execute(sql)
     total_results = int(curs.fetchone()[0])
     if total_results % 30 == 0:
@@ -86,7 +94,7 @@ def contents_with_platform(content, platform, page_num):
     else:
         total_pages = int(total_results / 30) + 1
 
-    sql = f"SELECT * FROM {content} where platform like '%{platform}%' ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
+    sql = f"SELECT * FROM {content} where platform like '%{plat}%' ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
     cur.execute(sql)
     # 전체 row 가져오기
     data = cur.fetchall()
@@ -151,10 +159,17 @@ def search_with_platform(content, platform, key, page_num):
         else:
           where = f"(title like '%{key}%' or genre like '%{key}%' or author like '%{key}%')"
 
+    platform = platform.split(',')
+    plat = ''
+    plat += f"'%{platform[0]}%'"
+    for i in range(1,len(platform)):
+      plat += ' or '
+      plat += f"'%{platform[i]}%'"
+      
     curs = conn.cursor()
     page_num = int(page_num.strip())
     res = []
-    sql = f"SELECT COUNT({ident}) FROM {content} where (platform like '%{platform}%' and {where})"
+    sql = f"SELECT COUNT({ident}) FROM {content} where (platform like '%{plat}%' and {where})"
     curs.execute(sql)
     total_results = int(curs.fetchone()[0])
     if total_results % 30 == 0:
@@ -163,7 +178,7 @@ def search_with_platform(content, platform, key, page_num):
         total_pages = int(total_results / 30) + 1
 
     key = key.strip()
-    sql = f"SELECT * FROM {content} where (platform like '%{platform}%' and {where}) ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
+    sql = f"SELECT * FROM {content} where (platform like '%{plat}%' and {where}) ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
     cur.execute(sql)
     data = cur.fetchall()
     jsonify(data)
