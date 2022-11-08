@@ -80,7 +80,7 @@ def contents_with_platform(content, platform, page_num):
     plat = ''
     plat += f"'%{platform[0]}%'"
     for i in range(1,len(platform)):
-      plat += ' or '
+      plat += ' or platform like '
       plat += f"'%{platform[i]}%'"
     
     curs = conn.cursor()
@@ -163,7 +163,7 @@ def search_with_platform(content, platform, key, page_num):
     plat = ''
     plat += f"'%{platform[0]}%'"
     for i in range(1,len(platform)):
-      plat += ' or '
+      plat += ' or platform like '
       plat += f"'%{platform[i]}%'"
       
     curs = conn.cursor()
