@@ -86,7 +86,7 @@ def contents_with_platform(content, platform, page_num):
     curs = conn.cursor()
     page_num = int(page_num.strip())
     res = []
-    sql = f"SELECT COUNT({ident}) FROM {content} where platform like {plat}"
+    sql = f"SELECT COUNT({ident}) FROM {content} where (platform like {plat})"
     curs.execute(sql)
     total_results = int(curs.fetchone()[0])
     if total_results % 30 == 0:
@@ -94,7 +94,7 @@ def contents_with_platform(content, platform, page_num):
     else:
         total_pages = int(total_results / 30) + 1
 
-    sql = f"SELECT * FROM {content} where platform like {plat} ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
+    sql = f"SELECT * FROM {content} where (platform like {plat}) ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
     cur.execute(sql)
     # 전체 row 가져오기
     data = cur.fetchall()
@@ -169,7 +169,7 @@ def search_with_platform(content, platform, key, page_num):
     curs = conn.cursor()
     page_num = int(page_num.strip())
     res = []
-    sql = f"SELECT COUNT({ident}) FROM {content} where (platform like {plat} and {where})"
+    sql = f"SELECT COUNT({ident}) FROM {content} where (platform like {plat}) and {where}"
     curs.execute(sql)
     total_results = int(curs.fetchone()[0])
     if total_results % 30 == 0:
@@ -178,7 +178,7 @@ def search_with_platform(content, platform, key, page_num):
         total_pages = int(total_results / 30) + 1
 
     key = key.strip()
-    sql = f"SELECT * FROM {content} where (platform like {plat} and {where}) ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
+    sql = f"SELECT * FROM {content} where (platform like {plat}) and {where} ORDER BY {sort_by} DESC LIMIT 30 OFFSET {30 * page_num - 30}"
     cur.execute(sql)
     data = cur.fetchall()
     jsonify(data)
